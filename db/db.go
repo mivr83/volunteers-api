@@ -15,6 +15,7 @@ func OpenDbConnection(settings *settings.ConnSettings) error {
 	return err
 }
 
+// creates sql specific string containing all necessary parameters
 func createDbParamString(settings *settings.ConnSettings) string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		settings.DbHost,

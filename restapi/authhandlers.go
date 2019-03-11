@@ -9,6 +9,7 @@ import (
 	"volunteers-api/session"
 )
 
+// handler for route POST:apiV1/login
 func loginHandler(ctx iris.Context) {
 
 	v := model.Login{}
@@ -18,16 +19,23 @@ func loginHandler(ctx iris.Context) {
 
 	var userId uint32 = 0
 	err := db.PostgresDb.QueryRow("select id from volunteers where email=trim($1) and password=trim($2)", v.Email, v.Password).Scan(&userId)
-	if err := setCtxFromDbError(ctx, err); err != nil {
+	if err := setCtxFromDbError(ctx, err, volunteerAlreadyExists); err != nil {
 		return
 	}
 
+	if userId == 0 {
+		setCtxError(ctx, invalidCredentials)
+		return
+	}
+
+	// generate fake token and add create session
 	uuidString := uuid.New().String()
 	apiSession.AddUser(uuidString, &session.User{DbId: userId, Role: "user"})
 
 	ctx.JSON(model.TokenResponse{Token: uuidString})
 }
 
+// handler for route GET:apiV1/logout
 func logoutHandler(ctx iris.Context) {
 	if usr, token := getUserForBearer(ctx); usr != nil {
 		log.Println("logging out user: ", token)

@@ -1,6 +1,7 @@
 package model
 
 type Volunteer struct {
+	Id       string `json:"id,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
@@ -11,13 +12,14 @@ func (v *Volunteer) IsValid() bool {
 }
 
 type Team struct {
+	Id    uint32 `json:"id"`
 	Name  string `json:"name"`
 	Motto string `json:"motto"`
 }
 
 type TeamCount struct {
-	Name    string `json:"team_name"`
-	Members uint32 `json:"members"`
+	Name      string `json:"team_name"`
+	Occupants uint32 `json:"occupants"`
 }
 
 func (v *Team) IsValid() bool {

@@ -1,7 +1,7 @@
 {
   "api_host": "127.0.0.1",
   "api_port": "8080",
-  "db_host": "192.168.0.18",
+  "db_host": "192.168.1.162",
   "db_port": "5432",
   "db_name": "volunteers_db",
   "db_user_name": "postgres",

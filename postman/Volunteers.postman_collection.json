@@ -1,0 +1,552 @@
+{
+	"info": {
+		"_postman_id": "f6a1c228-9975-48d1-b4fc-987c9de2b1db",
+		"name": "Volunteers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "volunteers",
+			"item": [
+				{
+					"name": "create volunteer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"userrr\",\n\t\"email\": \"email@email.com\",\n\t\"password\": \"psw\"\n}"
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/volunteers",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"volunteers"
+							]
+						},
+						"description": "Creates volunteer.\n\nAnyone can create volunteer. There are no restrictions even when should be (2fa for example).\n\nVolunteer must have unique email otherwise error is returned."
+					},
+					"response": []
+				},
+				{
+					"name": "update volunteer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"user 5555 with updated name\",\n\t\"email\": \"email_5@email.com\"\n}"
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/volunteers",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"volunteers"
+							]
+						},
+						"description": "Updates volunteer. To update profile volunteer nedds to be logged in. There is no need to select which volutneer to update, its done based on Bearer token.\n\nAlso password can't be changed through this endpoint.\n\nIs volunteer tryies to update email to new value which is already in db and its not his own then rror is returned."
+					},
+					"response": []
+				},
+				{
+					"name": "get volunteer profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/volunteers",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"volunteers"
+							]
+						},
+						"description": "Returns profile for currently logged in volunteer. "
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teams",
+			"item": [
+				{
+					"name": "create team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"zeta\",\n\t\"motto\": \"zeta team motto\"\n}"
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams"
+							]
+						},
+						"description": "Creates team and also became sort of 'owner' -> 'owner' can delete team.\n\nTeams have unique names.\n\nVolunteer needs to be logged in to do this action."
+					},
+					"response": []
+				},
+				{
+					"name": "join team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams/delta junior/join",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams",
+								"delta junior",
+								"join"
+							]
+						},
+						"description": "Allows volunteer to join team. Volunteer can join only once, when already joined nothing happen. \n\nteam is joined by its name, url format is:\nPOST: /api/v1/teams/{team_name:string}/join\n\nVolunteer needs to be logged in to do this action."
+					},
+					"response": []
+				},
+				{
+					"name": "leave team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams/delta junior/leave",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams",
+								"delta junior",
+								"leave"
+							]
+						},
+						"description": "Allows volunteer to leave joined team, if this team wasn't joined then nothin happen. (no error returned for this situation)\n\nteam is leaved based on its name, url format is:\nDEL: /api/v1/teams/{team_name:string}/leave\n\nVolunteer needs to be logged in to do this action."
+					},
+					"response": []
+				},
+				{
+					"name": "delete team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams/beta",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams",
+								"beta"
+							]
+						},
+						"description": "Deletes team and also removes all volunteers from tis team.\n\nOnly team 'creator' cand delete or disband team. \n\nteam is deleted by its name, url format is:\nDEL: /api/v1/teams/{team_name:string}\n\nVolunteer needs to be logged in to do this action."
+					},
+					"response": []
+				},
+				{
+					"name": "get teams",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams"
+							]
+						},
+						"description": "Returns list of all teams. \n\nVolunteer needs to be logged in to do this action."
+					},
+					"response": []
+				},
+				{
+					"name": "get count of team occupants",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams/occupants",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams",
+								"occupants"
+							]
+						},
+						"description": "Return list of all rooms and count of ocupants in them.\n\nThis endpoint don't require authorization and should be accesible and/or secured by other means but for demo purposes it's accessible like this."
+					},
+					"response": []
+				},
+				{
+					"name": "get joined teams",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/teams/joined",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"teams",
+								"joined"
+							]
+						},
+						"description": "Returns list of teams joined by currently logged in volunteer."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "volunteer login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "454f7c8a-4f6d-4726-80cd-97833c0b8bc2",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"TOKEN\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"email_3@email.com\",\n\t\"password\": \"psw\"\n}"
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/login",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						},
+						"description": "Used to login volunteer (using eamil and password)"
+					},
+					"response": []
+				},
+				{
+					"name": "volunteer logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "454f7c8a-4f6d-4726-80cd-97833c0b8bc2",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{URI}}/api/v1/logout",
+							"protocol": "http",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"logout"
+							]
+						},
+						"description": "Logsout volunteer."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

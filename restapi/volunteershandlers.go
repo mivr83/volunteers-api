@@ -6,6 +6,7 @@ import (
 	"volunteers-api/restapi/model"
 )
 
+// handler for route POST: apiV1/volunteers
 func createVolunteer(ctx iris.Context) {
 
 	v := model.Volunteer{}
@@ -20,10 +21,12 @@ func createVolunteer(ctx iris.Context) {
 	}
 
 	//lastInsertId := 0
-	_, insertErr := db.PostgresDb.Query("insert into volunteers(name,email,password) values($1,$2,$3)", v.Name, v.Email, v.Password)
-	setCtxFromDbError(ctx, insertErr)
+	_, insertErr := db.PostgresDb.Query("insert into volunteers(name,email,password) values($1,$2,$3)",
+		v.Name, v.Email, v.Password)
+	setCtxFromDbError(ctx, insertErr, volunteerAlreadyExists)
 }
 
+// handler for route GET: apiV1/volunteers
 func getVolunteers(ctx iris.Context) {
 
 	user, _ := getUserForBearer(ctx)
@@ -33,14 +36,16 @@ func getVolunteers(ctx iris.Context) {
 	}
 
 	output := model.Volunteer{}
-	err := db.PostgresDb.QueryRow("select name,email from volunteers where id=$1", user.DbId).Scan(&output.Name, &output.Email)
-	if err := setCtxFromDbError(ctx, err); err != nil {
+	err := db.PostgresDb.QueryRow("select id,name,email from volunteers where id=$1",
+		user.DbId).Scan(&output.Id, &output.Name, &output.Email)
+	if err := setCtxFromDbError(ctx, err, volunteerAlreadyExists); err != nil {
 		return
 	}
 
 	ctx.JSON(output)
 }
 
+// handler for route PUT: apiV1/volunteers
 func updateVolunteers(ctx iris.Context) {
 
 	user, _ := getUserForBearer(ctx)
@@ -60,6 +65,7 @@ func updateVolunteers(ctx iris.Context) {
 		return
 	}
 
-	_, insertErr := db.PostgresDb.Query("update volunteers set name=$2, email=$3 where id=$1", user.DbId, v.Name, v.Email)
-	setCtxFromDbError(ctx, insertErr)
+	_, insertErr := db.PostgresDb.Query(
+		"update volunteers set name=$2, email=$3 where id=$1", user.DbId, v.Name, v.Email)
+	setCtxFromDbError(ctx, insertErr, volunteerAlreadyExists)
 }

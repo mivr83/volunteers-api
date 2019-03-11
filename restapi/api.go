@@ -12,12 +12,14 @@ const apiV1Route = "/api/v1"
 var app *iris.Application
 var apiSession session.Session
 
-// initializes api, add all routes and starts server on specified configuration
+// initializes api, add all routes and starts server using specified configuration
+// takes as parameter session interface which is used to retrieve/store volunteers sessions
 func InitAndServe(connSettings *settings.ConnSettings, session session.Session) {
 	app = iris.Default()
 
 	apiSession = session
 
+	// base API route with version
 	apiV1 := app.Party(apiV1Route)
 	addRoutes(&apiV1)
 
@@ -26,23 +28,26 @@ func InitAndServe(connSettings *settings.ConnSettings, session session.Session) 
 }
 
 func addRoutes(party *iris.Party) {
-	lParty := *party
+	noAuthParty := *party
 
 	// router which checks if user is authenticated aka have token
-	authenticatedParty := lParty.Party("", handleAuth)
+	authParty := noAuthParty.Party("", handleAuth)
 
 	// ==== auth routes
 
 	// login user
-	lParty.Post("/login", loginHandler)
+	// POST apiV1Route/login
+	noAuthParty.Post("/login", loginHandler)
 
 	// logout user
-	lParty.Get("/logout", logoutHandler)
+	// GET apiV1Route/logout
+	noAuthParty.Get("/logout", logoutHandler)
 
 	// ==== volunteer routes
 
 	// returns all volunteers profiles (based on access rights, volunteers has rights to retrieve only his own profile)
-	authenticatedParty.Get("/volunteers", getVolunteers)
+	// GET apiV1Route/volunteers
+	authParty.Get("/volunteers", getVolunteers)
 
 	// returns specific volunteer profile with 'id' (based on access rights)
 	// todo implementation is omitted because it's not needed
@@ -53,43 +58,49 @@ func addRoutes(party *iris.Party) {
 	//lParty.Delete("/volunteers/{id:int}", nil)
 
 	// creates new volunteer
-	lParty.Post("/volunteers", createVolunteer)
+	// POST apiV1Route/volunteers
+	noAuthParty.Post("/volunteers", createVolunteer)
 
 	// updates specific volunteer (based on access rights)
 	// todo implementation is omitted because it's not needed
 	//lParty.Put("/volunteers/{id:int}", nil)
 
 	// updates currently logged in volunteer
-	authenticatedParty.Put("/volunteers", updateVolunteers)
+	// PUT apiV1Route/volunteers
+	authParty.Put("/volunteers", updateVolunteers)
 
 	// ==== teams routes
 
 	// returns list of teams
-	authenticatedParty.Get("/teams", getAllTeams)
-
-	// returns list of teams
-	authenticatedParty.Delete("/teams", getAllTeams)
+	// GET apiV1Route/teams
+	authParty.Get("/teams", getAllTeams)
 
 	// returns list of joined teams
-	// todo
-	authenticatedParty.Get("/teams/joined", getJoinedTeams)
+	// GET apiV1Route/teams/joined
+	authParty.Get("/teams/joined", getJoinedTeams)
 
 	// creates new team
-	authenticatedParty.Post("/teams", createTeam)
+	// POST apiV1Route/teams
+	authParty.Post("/teams", createTeam)
 
 	// joins specific team
 	// fixme should be done with id but its simpler to join team by name so i used name instead
-	authenticatedParty.Post("/teams/{name:string}/join", joinTeam)
+	// POST apiV1Route/{id:int}/join
+	authParty.Post("/teams/{name:string}/join", joinTeam)
 
 	// leaves specific team
 	// fixme should be done with id but its simpler to join team by name so i used name instead
-	authenticatedParty.Delete("/teams/{name:string}/leave", leaveTeam)
+	// DELETE apiV1Route/{id:int}/leave
+	authParty.Delete("/teams/{name:string}/leave", leaveTeam)
 
 	// deletes team (volunteer can delete team only when he was creator, also team can be deleted
 	// while it have active members, this will be removed from team)
-	authenticatedParty.Delete("/teams/{name:string}", deleteTeam)
+	// fixme should be done with id but its simpler to join team by name so i used name instead
+	// DELETE apiV1Route/teams/{id:int}
+	authParty.Delete("/teams/{name:string}", deleteTeam)
 
 	// returns list of teams with count of occupants
-	lParty.Get("/teams/occupants", getOccupants)
+	// GET apiV1Route/teams/occupants
+	noAuthParty.Get("/teams/occupants", getOccupants)
 
 }
